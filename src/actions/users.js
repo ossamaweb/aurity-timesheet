@@ -1,26 +1,34 @@
-import { getUsers } from '../api';
+import { getAllUsers } from '../api';
 
-export const REQUEST_USERS = 'REQUEST_USERS';
-export const RECEIVE_USERS = 'RECEIVE_USERS';
+export const GET_USERS = 'GET_USERS';
+export const GET_USERS_SUCCESS = 'GET_USERS_SUCCESS';
+export const GET_USERS_FAIL = 'GET_USERS_FAIL';
 
-function requestUsers() {
+function getUsers() {
   return {
-    type: REQUEST_USERS,
+    type: GET_USERS,
   }
 }
 
-function receiveUsers(data) {
+function getUsersSuccess(data) {
   return {
-    type: RECEIVE_USERS,
+    type: GET_USERS_SUCCESS,
     data
+  }
+}
+
+function getUsersFail(error) {
+  return {
+    type: GET_USERS_FAIL,
+    error
   }
 }
 
 export function fetchUsers() {
   return dispatch => {
-    dispatch(requestUsers())
-    return getUsers()
-      .then(response => dispatch(receiveUsers(response.data)))
-      .catch(error => console.log(error))
+    dispatch(getUsers())
+    return getAllUsers()
+      .then(response => dispatch(getUsersSuccess(response.data)))
+      .catch(error => dispatch(getUsersFail(error)))
   }
 }

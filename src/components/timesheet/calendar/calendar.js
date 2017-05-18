@@ -1,3 +1,4 @@
+// @flow
 import React from 'react';
 import PropTypes from 'prop-types';
 import { months, days } from '../../../constants';
@@ -6,17 +7,29 @@ import Loading from '../../loading/loading';
 import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 import './calendar.style.css';
 
-export default function Calendar({
+type CalendarProps = {
+  loading: boolean,
+  loaded: boolean,
+  selectedMonth: number,
+  selectedYear: number,
+  selectedWeek: Object,
+  data: Array<Object>,
+  handleNextMonth: Function,
+  handlePrevMonth: Function,
+  handleSelectWeek: Function
+};
+
+const Calendar = ({
   loading = false,
   loaded = false,
   selectedMonth,
   selectedYear,
-  selectedWeek = null,
+  selectedWeek = {},
   data = [],
   handleNextMonth,
   handlePrevMonth,
   handleSelectWeek
-}) {
+}: CalendarProps) => {
 
   if(loading) {
     return <Loading />;
@@ -24,6 +37,7 @@ export default function Calendar({
   if(!loaded) {
     return null;
   }
+  // move to reducer
   let calendarData = generateCalendar(selectedMonth, selectedYear);
   if (data && data.length > 0) {
     calendarData = mergeCalendar(calendarData, data);
@@ -35,6 +49,27 @@ export default function Calendar({
     className += selectedWeek && selectedWeek.week_id === week_id ? ' current' : '';
     return className
   };
+
+  const todayDate = new Date();
+  const numOfWeeksInMonth = calendarData.length;
+  const renderWeek = (daysInWeek, weekIndex ) => {
+    const isToday = (day_number) => (todayDate.getMonth() === selectedMonth - 1)
+      && (todayDate.getFullYear() === selectedYear)
+      && (todayDate.getDate() === day_number);
+    // isOdd: day doesn't belong to selected month
+    const isOdd = (day_number) => (weekIndex === 0 && day_number > 7)
+      || (weekIndex === numOfWeeksInMonth - 1 && day_number < 7);
+    return daysInWeek.map(({ id, day_number, hours, minutes }) =>
+      <td
+        key={id}
+        className={`${isOdd(day_number) ? 'odd' : ''}${isToday(day_number) ? ' current' : ''}`.trim()}
+      >
+        {day_number}
+        <p>
+          {`${hours > 0 ? `${hours}h` : ''}${minutes > 0 ? `:${minutes}m` : ''}`}
+        </p>
+      </td>);
+  }
   return (
     <CSSTransitionGroup
       component="div"
@@ -57,13 +92,13 @@ export default function Calendar({
           </tr>
         </thead>
         <tbody>
-          {calendarData.map((week) =>
+          {calendarData.map((week, index) =>
             <tr 
               key={week.week_id}
               className={weekClassName(week)}
               onClick={week.data_exist ? () => handleSelectWeek(week) : () => {}}>
               <th>{week.week_number}<p /></th>
-              {renderWeek(week.days_in_week)}
+              {renderWeek(week.days_in_week, index)}
             </tr>
           )}
         </tbody>
@@ -72,25 +107,4 @@ export default function Calendar({
   );
 }
 
-
-function renderWeek(days_in_week) {
-  return days_in_week.map(({ id, day_number, hours, minutes }) =>
-    <td key={id}>
-      {day_number}
-      <p>
-        {`${hours > 0 ? `${hours}h` : ''}${minutes > 0 ? `:${minutes}m` : ''}`}
-      </p>
-    </td>);
-}
-
-Calendar.propTypes = {
-  loading: PropTypes.bool,
-  loaded: PropTypes.bool,
-  selectedMonth: PropTypes.number.isRequired,
-  selectedYear: PropTypes.number.isRequired,
-  selectedWeek: PropTypes.object,
-  data: PropTypes.array,
-  handleNextMonth: PropTypes.func.isRequired,
-  handlePrevMonth: PropTypes.func.isRequired,
-  handleSelectWeek: PropTypes.func.isRequired,
-}
+export default Calendar;

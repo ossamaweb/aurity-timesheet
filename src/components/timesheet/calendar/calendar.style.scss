@@ -43,6 +43,15 @@
         background-color: lighten($gray,15%);
       }
     }
+    td {
+      &.odd {
+        background-color: lighten($gray,15%);
+        color: $gray;
+      }
+      &.current {
+        background-color: #fbf0bf;
+      }
+    }
   }
 }
 .hidden {

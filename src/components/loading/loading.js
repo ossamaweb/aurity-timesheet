@@ -3,7 +3,7 @@ import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 import logo from '../app/logo.svg';
 import './loading.style.css';
 
-export default function Loading() {
+const Loading = () => {
   return (
     <CSSTransitionGroup
       component="div"
@@ -18,3 +18,4 @@ export default function Loading() {
     </CSSTransitionGroup>
   );
 }
+export default Loading;

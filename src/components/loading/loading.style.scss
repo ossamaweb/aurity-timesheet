@@ -1,0 +1,37 @@
+.loading-container {
+  position: fixed;
+  z-index: 99999;
+  height: 100%;
+  overflow:auto;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0,0,0,0.4);
+  >.loading-img {
+    position: absolute;
+    top: 50%;
+    margin-top: -20px;
+    opacity: 0.5;
+  }
+}
+.loading {
+  padding: 30px 0;
+}
+.loading-img {
+  animation: app-logo-spin infinite 2s linear;
+  height: 40px;
+  opacity: 0.2;
+}
+.loading-appear {
+  opacity: 0.01;
+}
+
+.loading-appear.loading-appear-active {
+  opacity: 0.2;
+  transition: opacity .5s ease-in;
+}
+@keyframes app-logo-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

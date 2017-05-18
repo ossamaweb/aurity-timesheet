@@ -5,6 +5,7 @@ import {
 
 const initialState = {
   data: [],
+  currentUser: {},
   UIstate: { loading: false, loaded: false, error: null },
 };
 
@@ -25,7 +26,8 @@ export default function users(state = initialState, action) {
           loaded: true,
           error: null
         },
-        data: action.data
+        data: action.data,
+        currentUser: action.data[1] // first as user as loggedIn user
       })
     case GET_USERS_FAIL:
       return Object.assign({}, state, {

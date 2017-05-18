@@ -8,3 +8,10 @@ export function getAllUsers() {
 export function getMonthData(month_number, year, user_id) {
   return axios.get(`/training/weeks/${month_number}/${year}/${user_id}`);
 }
+
+export function updateWeek(weekId, approvedById, status) {
+  return axios.put(
+    `/training/weeks/${weekId}/users/${approvedById}`,
+    { status }
+  );
+}

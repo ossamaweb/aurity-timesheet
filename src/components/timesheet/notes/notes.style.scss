@@ -1,0 +1,51 @@
+@import '../../../styles/variables.scss';
+
+.columns {
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.column {
+  float: left;
+  list-style: none;
+  text-align: left;
+  width: 50%;
+  > li {
+    margin-bottom: 5px;
+  }
+  th {
+    text-align: right;
+  }
+}
+.buttons {
+  overflow: hidden;
+  > button {
+    color: $white;
+    padding: 10px 20px;
+    &:disabled {
+      cursor: auto;
+      color: lighten($gray, 15%);
+      background-color: $gray;
+      border-color: $gray;
+      &:hover {
+        background-color: $gray;
+      }
+    }
+  }
+  .btn-reject {
+    float: left;
+    background-color: lighten($red, 15%);
+    border-color: lighten($red, 10%);
+    &:hover {
+    	background-color: lighten($red, 30%);
+    }
+  }
+  .btn-approve {
+    float: right;
+    background-color: lighten($green, 15%);
+    border-color: lighten($green, 10%);
+    &:hover {
+    	background-color: lighten($green, 30%);
+    }
+  }
+}

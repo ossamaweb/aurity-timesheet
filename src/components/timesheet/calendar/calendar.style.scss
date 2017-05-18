@@ -1,0 +1,50 @@
+@import '../../../styles/variables.scss';
+
+.calendar-buttons {
+  overflow: hidden;
+  margin-bottom: 20px;
+  .button {
+    &.next {
+    	float: right;
+    }
+    &.prev {
+    	float: left;
+    }
+  }
+  h3 {
+  	display: inline-block;
+  	margin: 8px 0;
+  }
+}
+.calendar-table {
+  width: 100%;
+  border-spacing: 0;
+  border-top: 1px solid $gray;
+  border-left: 1px solid $gray;
+  th, td {
+    border-right: 1px solid $gray;
+    border-bottom: 1px solid $gray;
+    padding: 10px 0;
+    >p{
+      margin: 0;
+      font-size: 13px;
+      min-height: 15px;
+    }
+  }
+  thead {
+    tr > th {
+      text-transform: uppercase;
+    }
+  }
+  tbody {
+    tr.selectable,  {
+      cursor: pointer;
+      &:hover, &:focus, &.current {
+        background-color: lighten($gray,15%);
+      }
+    }
+  }
+}
+.hidden {
+  visibility: hidden;
+}

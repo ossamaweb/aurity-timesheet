@@ -1,0 +1,22 @@
+.header {
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.header-title {
+  float: left;
+  margin: 8px 0 0;
+}
+
+.header-form {
+  float: right;
+}
+
+.header-form-select {
+  margin-left: 10px;
+  font-size: 13px;
+  border: 1px solid #ccc;
+  background: #fff;
+  color: #494646;
+  height: 35px;
+}

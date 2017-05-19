@@ -15,10 +15,15 @@
     "redux-thunk": "^2.2.0"
   },
   "devDependencies": {
+    "enzyme": "^2.8.2",
     "flow-bin": "^0.46.0",
+    "moxios": "^0.4.0",
     "node-sass-chokidar": "0.0.1",
     "npm-run-all": "^4.0.2",
-    "react-scripts": "0.9.5"
+    "react-scripts": "0.9.5",
+    "react-test-renderer": "^15.5.4",
+    "redux-mock-store": "^1.2.3",
+    "sinon": "^2.2.0"
   },
   "scripts": {
     "build-css": "node-sass-chokidar src/ -o src/",

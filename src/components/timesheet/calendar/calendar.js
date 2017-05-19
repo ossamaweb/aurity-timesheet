@@ -37,7 +37,7 @@ const Calendar = ({
   if(!loaded) {
     return null;
   }
-  // move to reducer
+  // TO DO: move to reducer
   let calendarData = generateCalendar(selectedMonth, selectedYear);
   if (data && data.length > 0) {
     calendarData = mergeCalendar(calendarData, data);
@@ -52,6 +52,8 @@ const Calendar = ({
 
   const todayDate = new Date();
   const numOfWeeksInMonth = calendarData.length;
+
+  // TO DO: move to reducer
   const renderWeek = (daysInWeek, weekIndex ) => {
     const isToday = (day_number) => (todayDate.getMonth() === selectedMonth - 1)
       && (todayDate.getFullYear() === selectedYear)
@@ -94,7 +96,7 @@ const Calendar = ({
         <tbody>
           {calendarData.map((week, index) =>
             <tr 
-              key={week.week_id}
+              key={week.week_number}
               className={weekClassName(week)}
               onClick={week.data_exist ? () => handleSelectWeek(week) : () => {}}>
               <th>{week.week_number}<p /></th>

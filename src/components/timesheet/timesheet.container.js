@@ -134,12 +134,12 @@ class TimesheetContainer extends Component {
     return (
       <div>
         <Header
-            data={usersData}
-            loaded={usersUIstate.loaded}
-            currentUser={currentUser}
-            selected={selectedUser}
-            handleOnChange={this.handleSelectUser}
-          />
+          data={usersData}
+          loaded={usersUIstate.loaded}
+          currentUser={currentUser}
+          selected={selectedUser}
+          handleOnChange={this.handleSelectUser}
+        />
         <Calendar
           loading={weeksUIstate.loading}
           loaded={weeksUIstate.loaded}

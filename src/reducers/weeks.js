@@ -23,7 +23,7 @@ const initialState = {
   updateUIstate: { updating: false, updated: false, error: null },
 };
 
-export default function users(state = initialState, action) {
+export default function weeks(state = initialState, action) {
   switch (action.type) {
     case GET_WEEKS:
       return Object.assign({}, state, {

@@ -1,6 +1,5 @@
 // @flow
 import React from 'react';
-import PropTypes from 'prop-types';
 import { map, isEmpty } from 'ramda';
 import { days } from '../../../constants';
 import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';

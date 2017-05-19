@@ -1,11 +1,12 @@
+// @flow
 import { createStore, applyMiddleware } from 'redux'
 import thunkMiddleware from 'redux-thunk'
 import { createLogger } from 'redux-logger'
 import configureReducer from './configureReducer'
 
-const loggerMiddleware = createLogger()
+const loggerMiddleware = createLogger();
 
-export default function configureStore(preloadedState) {
+const configureStore = (preloadedState: any) => {
   return createStore(
     configureReducer,
     preloadedState,
@@ -15,3 +16,4 @@ export default function configureStore(preloadedState) {
     )
   )
 }
+export default configureStore;

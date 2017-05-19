@@ -1,15 +1,16 @@
+// @flow
 import axios from 'axios';
 axios.defaults.baseURL = 'https://timesheet-staging-aurity.herokuapp.com/api';
 
-export function getAllUsers() {
+export const getAllUsers = () => {
   return axios.get('/users');
 }
 
-export function getMonthData(month_number, year, user_id) {
-  return axios.get(`/training/weeks/${month_number}/${year}/${user_id}`);
+export const getMonthData = (monthNumber: number, year: number, userId: ?number) => {
+  return axios.get(`/training/weeks/${monthNumber}/${year}/${userId ? userId : ''}`);
 }
 
-export function updateWeek(weekId, approvedById, status) {
+export const updateWeek = (weekId: number, approvedById: number, status: string) => {
   return axios.put(
     `/training/weeks/${weekId}/users/${approvedById}`,
     { status }

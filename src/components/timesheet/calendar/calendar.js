@@ -1,8 +1,6 @@
 // @flow
 import React from 'react';
-import PropTypes from 'prop-types';
 import { months, days } from '../../../constants';
-import { generateCalendar, mergeCalendar } from '../../../utils/calendar.utils';
 import Loading from '../../loading/loading';
 import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 import './calendar.style.css';
@@ -37,41 +35,13 @@ const Calendar = ({
   if(!loaded) {
     return null;
   }
-  // TO DO: move to reducer
-  let calendarData = generateCalendar(selectedMonth, selectedYear);
-  if (data && data.length > 0) {
-    calendarData = mergeCalendar(calendarData, data);
-  }
 
   const weekClassName = ({ status, data_exist, week_id }) => {
-    let className = status;
-    className += data_exist ? ' selectable' : '';
-    className += selectedWeek && selectedWeek.week_id === week_id ? ' current' : '';
-    return className
+    const isCurrent = (selectedWeek && selectedWeek.week_id === week_id);
+    return `${status}${data_exist ? ' selectable' : ''}${isCurrent ? ' current' : ''}`
   };
 
-  const todayDate = new Date();
-  const numOfWeeksInMonth = calendarData.length;
 
-  // TO DO: move to reducer
-  const renderWeek = (daysInWeek, weekIndex ) => {
-    const isToday = (day_number) => (todayDate.getMonth() === selectedMonth - 1)
-      && (todayDate.getFullYear() === selectedYear)
-      && (todayDate.getDate() === day_number);
-    // isOdd: day doesn't belong to selected month
-    const isOdd = (day_number) => (weekIndex === 0 && day_number > 7)
-      || (weekIndex === numOfWeeksInMonth - 1 && day_number < 7);
-    return daysInWeek.map(({ id, day_number, hours, minutes }) =>
-      <td
-        key={id}
-        className={`${isOdd(day_number) ? 'odd' : ''}${isToday(day_number) ? ' current' : ''}`.trim()}
-      >
-        {day_number}
-        <p>
-          {`${hours > 0 ? `${hours}h` : ''}${minutes > 0 ? `:${minutes}m` : ''}`}
-        </p>
-      </td>);
-  }
   return (
     <CSSTransitionGroup
       component="div"
@@ -94,13 +64,27 @@ const Calendar = ({
           </tr>
         </thead>
         <tbody>
-          {calendarData.map((week, index) =>
+          {data.map((week, index) =>
             <tr 
               key={week.week_number}
               className={weekClassName(week)}
               onClick={week.data_exist ? () => handleSelectWeek(week) : () => {}}>
-              <th>{week.week_number}<p /></th>
-              {renderWeek(week.days_in_week, index)}
+              <th>
+                {week.week_number}
+                <p />
+              </th>
+              {
+                week.days_in_week.map(({ id, key, day_number, hours, minutes, is_odd, is_today }) =>
+                  <td
+                    key={key}
+                    className={`${is_odd ? 'odd' : ''}${is_today ? ' current' : ''}`.trim()}
+                  >
+                    {day_number}
+                    <p>
+                      {`${hours > 0 ? `${hours}h` : ''}${minutes > 0 ? `:${minutes}m` : ''}`}
+                    </p>
+                  </td>
+              )}
             </tr>
           )}
         </tbody>

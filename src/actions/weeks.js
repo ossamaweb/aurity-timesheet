@@ -1,4 +1,7 @@
+// @flow
+import type { Action, Dispatch } from '../types';
 import { getMonthData, updateWeek } from '../api';
+import { appBlockUI } from './app';
 
 export const GET_WEEKS = 'GET_WEEKS';
 export const GET_WEEKS_SUCCESS = 'GET_WEEKS_SUCCESS';
@@ -8,31 +11,29 @@ export const UPDATE_WEEK_STATUS = 'UPDATE_WEEK_STATUS';
 export const UPDATE_WEEK_STATUS_SUCCESS = 'UPDATE_WEEK_STATUS_SUCCESS';
 export const UPDATE_WEEK_STATUS_FAIL = 'UPDATE_WEEK_STATUS_FAIL';
 
-function getWeeks(monthNumber, year, userId) {
+const getWeeks = (monthNumber: number, year: number, userId: ?number): Action => {
   return {
     type: GET_WEEKS,
-    monthNumber,
-    year,
-    userId
+    payload: { monthNumber, year, userId },
   }
 }
 
-function getWeeksSuccess(data) {
+const getWeeksSuccess = (data: Object): Action => {
   return {
     type: GET_WEEKS_SUCCESS,
-    data
+    payload: { data },
   }
 }
 
-function getWeeksFail(error) {
+const getWeeksFail = (error: Error): Action => {
   return {
     type: GET_WEEKS_FAIL,
-    error
+    payload: { error },
   }
 }
 
-export function fetchWeeks(monthNumber, year, userId) {
-  return dispatch => {
+export const fetchWeeks = (monthNumber: number, year: number, userId: ?number) => {
+  return (dispatch: Dispatch) => {
     dispatch(getWeeks(monthNumber, year, userId))
     return getMonthData(monthNumber, year, userId)
       .then(response => dispatch(getWeeksSuccess(response.data)))
@@ -40,43 +41,41 @@ export function fetchWeeks(monthNumber, year, userId) {
   }
 }
 
-export function selectWeek(selectedWeek) {
+export const selectWeek = (selectedWeek: Object): Action => {
   return {
     type: SELECT_WEEK,
-    selectedWeek
+    payload: { selectedWeek },
   }
 }
 
-function updateWeekStatus(weekId, approvedById, status) {
+const updateWeekStatus = (weekId: number, approvedById: number, status: string): Action => {
   return {
     type: UPDATE_WEEK_STATUS,
-    blockUI: true,
+    payload: { blockUI: true },
   }
 }
 
-function updateWeekStatusSuccess(data) {
+const updateWeekStatusSuccess = (data: Object): Action => {
   return {
     type: UPDATE_WEEK_STATUS_SUCCESS,
-    data,
-    blockUI: false,
+    payload: { data, blockUI: false },
   }
 }
 
-function updateWeekStatusFail(error) {
+const updateWeekStatusFail = (error: Error): Action => {
   return {
     type: UPDATE_WEEK_STATUS_FAIL,
-    error,
-    blockUI: false,
+    payload: { error, blockUI: false },
   }
 }
 
-export function updateStatus(weekId, approvedById, status) {
-  return dispatch => {
+export const updateStatus = (weekId: number, approvedById: number, status: string) => {
+  return (dispatch: Dispatch) => {
     dispatch(updateWeekStatus(weekId, approvedById, status))
+    dispatch(appBlockUI(true))
     return updateWeek(weekId, approvedById, status)
       .then(response => dispatch(updateWeekStatusSuccess(response.data)))
       .catch(error => dispatch(updateWeekStatusFail(error)))
+      .then(response => dispatch(appBlockUI(false)))
   }
 }
-
-

@@ -23,9 +23,11 @@ describe('Reducer: weeks', () => {
   it('can handle GET_WEEKS', () => {
     expect(weeks(undefined, { 
       type: GET_WEEKS,
-      userId: 1,
-      monthNumber: 5,
-      year: 2017,
+      payload: {
+        userId: 1,
+        monthNumber: 5,
+        year: 2017,
+      }
     })).toEqual(
       Object.assign({}, initialState, {
         UIstate: {

@@ -1,31 +1,33 @@
+// @flow
 import { getAllUsers } from '../api';
+import type { Action, Dispatch, User } from '../types';
 
 export const GET_USERS = 'GET_USERS';
 export const GET_USERS_SUCCESS = 'GET_USERS_SUCCESS';
 export const GET_USERS_FAIL = 'GET_USERS_FAIL';
 
-function getUsers() {
+const getUsers = (): Action =>{
   return {
     type: GET_USERS,
   }
 }
 
-function getUsersSuccess(data) {
+const getUsersSuccess = (data: Array<User>): Action => {
   return {
     type: GET_USERS_SUCCESS,
-    data
+    payload: { data },
   }
 }
 
-function getUsersFail(error) {
+const getUsersFail = (error: Error): Action => {
   return {
     type: GET_USERS_FAIL,
-    error
+    payload: { error },
   }
 }
 
-export function fetchUsers() {
-  return dispatch => {
+export const fetchUsers = () => {
+  return (dispatch: Dispatch) => {
     dispatch(getUsers())
     return getAllUsers()
       .then(response => dispatch(getUsersSuccess(response.data)))

@@ -1,13 +1,13 @@
 // @flow
+import type { User } from '../../../types';
 import React from 'react';
-import PropTypes from 'prop-types';
 import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 import './header.style.css';
 
 type HeaderProps = {
-  data: ?Array<Object>,
+  data: Array<User>,
   loaded: boolean,
-  currentUser: ?Object,
+  currentUser: ?User,
   selected: ?number,
   handleOnChange: Function,
 };
@@ -39,7 +39,7 @@ const Header = ({
           <select
             className="header-form-select"
             value={selected ? selected : ''}
-            onChange={handleOnChange}
+            onChange={({ target: { value } }) => handleOnChange(value)}
           >
             <option value="">Please Select</option>
             {data && data.map(({ id, username }) =>

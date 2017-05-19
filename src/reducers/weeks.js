@@ -1,3 +1,5 @@
+// @flow
+import type { Action, WeeksState } from '../types';
 import {
   GET_WEEKS,
   GET_WEEKS_SUCCESS,
@@ -7,11 +9,12 @@ import {
   UPDATE_WEEK_STATUS_SUCCESS,
   UPDATE_WEEK_STATUS_FAIL
 } from '../actions/weeks';
-import { sortWith, prop, ascend, propEq, update, findIndex } from 'ramda';
+import { propEq, update, findIndex, assocPath, pick } from 'ramda';
+import { generateCalendar } from '../utils/calendar.utils';
 
-const weekNumberSort = sortWith([
-  ascend(prop('week_number'))
-]);
+const findWeekIndex = (weekId: number, data: Array<Object>) => {
+  return findIndex(propEq('week_id', weekId))(data);
+}
 
 const initialState = {
   data: [],
@@ -23,70 +26,92 @@ const initialState = {
   updateUIstate: { updating: false, updated: false, error: null },
 };
 
-export default function weeks(state = initialState, action) {
+const weeks = (
+  state: WeeksState = initialState,
+  action: Action
+): WeeksState => {
   switch (action.type) {
     case GET_WEEKS:
-      return Object.assign({}, state, {
+      const { userId, monthNumber, year } = action.payload;
+      return {
+        ...state,
         UIstate: {
           loading: true,
           loaded: false,
           error: null
         },
-        selectedUser: action.userId,
-        selectedMonth: action.monthNumber,
-        selectedYear: action.year,
+        selectedUser: userId,
+        selectedMonth: monthNumber,
+        selectedYear: year,
         selectedWeek: {},
-      })
+      };
     case GET_WEEKS_SUCCESS:
-      return Object.assign({}, state, {
+      const { data: { data: { weeks } } } = action.payload;
+      const { selectedMonth, selectedYear } = state;
+      return {
+        ...state,
         UIstate: {
           loading: false,
           loaded: true,
           error: null
         },
-        data: weekNumberSort(action.data.data.weeks)
-      })
+        data: generateCalendar(selectedMonth, selectedYear, weeks)
+      };
     case GET_WEEKS_FAIL:
-      return Object.assign({}, state, {
+      const { error } = action.payload;
+      return {
+        ...state,
         UIstate: {
           loading: false,
           loaded: false,
-          error: action.error
+          error
         },
         data: []
-      })
+      };
     case SELECT_WEEK:
-      return Object.assign({}, state, {
-        selectedWeek: action.selectedWeek,
-      })
+      const { selectedWeek } = action.payload;
+      return {
+        ...state,
+        selectedWeek: selectedWeek,
+      };
     case UPDATE_WEEK_STATUS:
-      return Object.assign({}, state, {
+      return {
+        ...state,
         updateUIstate: {
           updating: true,
           updated: false,
           error: null
         }
-      })
+      };
     case UPDATE_WEEK_STATUS_SUCCESS:
-      const updatedWeekIndex = findIndex(propEq('week_id', action.data.week_id))(state.data);
-      return Object.assign({}, state, {
+      const { data } = action.payload;
+      const weekIndex = findWeekIndex(data.week_id, state.data);
+      const updatedData = {
+        ...state.data[weekIndex],
+        ...pick(['status', 'approved_by_id', 'approved_by_date'], data)
+      }
+      return {
+        ...state,
         updateUIstate: {
           updating: false,
           updated: true,
           error: null
         },
-        data: update(updatedWeekIndex, action.data, state.data),
-        selectedWeek: action.data,
-      })
+        data: update(weekIndex, updatedData, state.data),
+        selectedWeek: updatedData,
+      };
     case UPDATE_WEEK_STATUS_FAIL:
-      return Object.assign({}, state, {
+      return {
+        ...state,
         updateUIstate: {
           updating: false,
           updated: false,
-          error: action.error
+          error: action.payload.error
         }
-      })
+      };
     default:
-      return state
+      return state;
   }
 }
+
+export default weeks;

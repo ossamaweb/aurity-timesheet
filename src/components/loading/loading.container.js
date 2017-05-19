@@ -1,6 +1,6 @@
 // @flow
+import type { State } from '../../types';
 import React from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import CSSTransitionGroup from 'react-transition-group/CSSTransitionGroup';
 import logo from '../app/logo.svg';
@@ -29,7 +29,7 @@ const LoadingConatiner = ({ blockUI = false }: LoadingConatinerProps) => {
 }
 
 export default connect(
-  (state) => ({
+  (state: State) => ({
     blockUI: state.app.blockUI,
   })
 )(LoadingConatiner);

@@ -14,12 +14,12 @@ const baseURL = 'https://timesheet-staging-aurity.herokuapp.com/api';
 const mockStore = configureMockStore([thunk]);
 
 describe('Actions: weeks', () => {
-  // Sync Action
+  // Normal Action
   it('should create an action to select a week', () => {
     const selectedWeek = { week_id: 1, week_number: 5 };
     const expectedAction = {
       type: SELECT_WEEK,
-      selectedWeek
+      payload: { selectedWeek }
     }
     expect(selectWeek(selectedWeek)).toEqual(expectedAction);
   })
@@ -45,11 +45,15 @@ describe('Actions: weeks', () => {
    
     const expectedActions = [
       { type: GET_WEEKS,
-        monthNumber,
-        year,
-        userId
+        payload: {
+          monthNumber,
+          year,
+          userId
+        }
       },
-      { type: GET_WEEKS_SUCCESS, data }
+      { type: GET_WEEKS_SUCCESS,
+        payload : { data }
+      }
     ];
 
     const store = mockStore({ weeks: { data: [] } });
@@ -72,11 +76,15 @@ describe('Actions: weeks', () => {
    
     const expectedActions = [
       { type: GET_WEEKS,
-        monthNumber,
-        year,
-        userId
+        payload: {
+          monthNumber,
+          year,
+          userId
+        }
       },
-      { type: GET_WEEKS_FAIL, error }
+      { type: GET_WEEKS_FAIL,
+        payload: { error }
+      }
     ];
 
     const store = mockStore({ weeks: {

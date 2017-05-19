@@ -1,6 +1,6 @@
 // @flow
+import type { User, State, UIstate, updateUIstate } from '../../types';
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { fetchUsers } from '../../actions/users';
 import { fetchWeeks, selectWeek, updateStatus } from '../../actions/weeks';
@@ -11,12 +11,12 @@ import Notes from './notes/notes';
 import Loading from '../loading/loading';
 
 type TimesheetContainerProps = {
-  usersData: Array<Object>,
-  usersUIstate: Object,
-  currentUser: ?Object,
+  usersData: Array<User>,
+  usersUIstate: UIstate,
+  currentUser: User,
   weeksData: Array<Object>,
-  weeksUIstate: Object,
-  weeksUpdateUIstate: Object,
+  weeksUIstate: UIstate,
+  weeksUpdateUIstate: updateUIstate,
   selectedMonth: number,
   selectedYear: number,
   selectedUser: ?number,
@@ -27,15 +27,23 @@ type TimesheetContainerProps = {
   updateStatus: typeof updateStatus
 };
 
-class TimesheetContainer extends Component {
+// Use named export for unconnected component (for tests)
+export class TimesheetContainer extends Component {
 
   static defaultProps = {
-    usersData: [],
     currentUser: {},
     weeksData: [],
     selectedUser: null,
   };
   props: TimesheetContainerProps;
+
+  handleSelectWeek: Function;
+  handleSelectUser: Function;
+  handlePrevMonth: Function;
+  handleNextMonth: Function;
+  handleSelectWeek: Function;
+  handleStatusBtnClick: Function;
+  getUserName: Function;
 
   constructor() {
     super();
@@ -51,14 +59,14 @@ class TimesheetContainer extends Component {
     this.props.fetchUsers();
   }
 
-  handleSelectUser = (event) => {
-    if (event.target.value) {
+  handleSelectUser(value: ?string) {
+    if (value) {
       const { selectedMonth, selectedYear } = this.props;
-      this.props.fetchWeeks(selectedMonth, selectedYear, parseInt(event.target.value, 10));
+      this.props.fetchWeeks(selectedMonth, selectedYear, parseInt(value, 10));
     }
   }
 
-  handlePrevMonth = () => {
+  handlePrevMonth() {
     const { selectedUser, selectedYear, selectedMonth } = this.props;
     let year = selectedYear;
     let month = selectedMonth - 1;
@@ -69,7 +77,7 @@ class TimesheetContainer extends Component {
     this.props.fetchWeeks(month, year, selectedUser);
   }
 
-  handleNextMonth = () => {
+  handleNextMonth() {
     const { selectedUser, selectedYear, selectedMonth } = this.props;
     let year = selectedYear;
     let month = selectedMonth + 1;
@@ -80,11 +88,11 @@ class TimesheetContainer extends Component {
     this.props.fetchWeeks(month, year, selectedUser);
   }
 
-  handleSelectWeek = (selectedWeek) => {
+  handleSelectWeek(selectedWeek: Object) {
     this.props.selectWeek(selectedWeek);
   }
 
-  handleStatusBtnClick = (status) => {
+  handleStatusBtnClick(status: string) {
     if (!this.props.selectedWeek || !this.props.currentUser) {
       return;
     }
@@ -97,11 +105,11 @@ class TimesheetContainer extends Component {
     
   }
 
-  isApprover(userId, approvers) {
+  isApprover(userId: number, approvers: Array<number>) {
     return ~approvers.indexOf(userId);
   }
 
-  getUserName = (userID) => {
+  getUserName(userID: number) {
     const { usersData } = this.props;
     let userName = null;
     if (usersData && usersData.length > 0) {
@@ -163,7 +171,7 @@ class TimesheetContainer extends Component {
 }
 
 export default connect(
-  (state) => ({
+  (state: State) => ({
     usersData: state.users.data,
     usersUIstate: state.users.UIstate,
     currentUser: state.users.currentUser,

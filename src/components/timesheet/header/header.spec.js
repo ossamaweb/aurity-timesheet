@@ -1,37 +1,36 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { mount } from 'enzyme';
 import sinon from 'sinon';
 import Header from './header';
 
-describe('Component: Header', () => {
-  const minProps = {
-    data: [],
+function setup() {
+  const props = {
+    data: [{ id: 1, username: 'Ossama' }, { id: 2, username: 'Peter' }],
     loaded: true,
+    currentUser: { id: 1, username: 'Ossama' },
+    handleOnChange: jest.fn(),
   }
-  it('should render without exploding', () => {
-    const wrapper = shallow(<Header {...minProps}/>);
-    expect(wrapper.length).toEqual(1);
-  });
 
-  it('should render select', () => {
-    const wrapper = shallow(<Header {...minProps}/>);
-    expect(wrapper.find('select').length).toEqual(1);
-  });
+  const enzymeWrapper = mount(<Header {...props} />)
 
-  it('should not render select', () => {
-    const wrapper = shallow(<Header {...minProps} loaded={false}/>);
-    expect(wrapper.find('select').length).toEqual(0);
-  });
+  return {
+    props,
+    enzymeWrapper
+  }
+}
 
-  it('should render select options', () => {
-    const wrapper = shallow(<Header {...minProps} data={ [{ id: 1, username: 'Ossama'}] }/>);
-    expect(wrapper.find('select option').length).toEqual(2); // 2 because an empty option exist
-  });
+describe('Component: Header', () => {
+  it('should render self and subcomponents', () => {
+    const { enzymeWrapper } = setup();
+    expect(enzymeWrapper.find('h4').hasClass('header-title')).toBe(true);
+    expect(enzymeWrapper.find('h4').text()).toBe('Welcome, Ossama!');
+    expect(enzymeWrapper.find('select option').length).toEqual(3); // 3 because an empty option exist
+   })
 
-  it('simulates change events', () => {
-      const onSelectChange = sinon.spy();
-      const wrapper = shallow(<Header {...minProps} data={ [{ id: 1, username: 'Ossama'}] } handleOnChange={onSelectChange}/>);
-      wrapper.find('select').simulate('change');
-      expect(onSelectChange.calledOnce).toEqual(true);
-    });
+  it('should call handleOnChange if option changed', () => {
+      const { enzymeWrapper, props } = setup();
+      const select = enzymeWrapper.find('select');
+      select.simulate('change');
+      expect(props.handleOnChange.mock.calls.length).toBe(1);
+    })
 });

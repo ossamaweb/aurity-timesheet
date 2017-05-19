@@ -9,7 +9,7 @@ import {
   UPDATE_WEEK_STATUS_SUCCESS,
   UPDATE_WEEK_STATUS_FAIL
 } from '../actions/weeks';
-import { propEq, update, findIndex, assocPath, pick } from 'ramda';
+import { propEq, update, findIndex, pick } from 'ramda';
 import { generateCalendar } from '../utils/calendar.utils';
 
 const findWeekIndex = (weekId: number, data: Array<Object>) => {
